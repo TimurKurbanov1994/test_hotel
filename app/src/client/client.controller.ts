@@ -30,7 +30,8 @@ export class ClientController {
   public async create(
     @Body() client: CreateClientDto,
   ): Promise<ClientResponseDto> {
-    return await this.clientService.create(client);
+    const clientEntity = await this.clientService.create(client);
+    return new ClientResponseDto(clientEntity);
   }
 
   @ApiTags('Client')
@@ -42,8 +43,9 @@ export class ClientController {
   })
   @HttpCode(200)
   @Get()
-  public async getAll(): Promise<any> {
-    return await this.clientService.getAll();
+  public async getAll(): Promise<ClientResponseDto[]> {
+    const clientsEntity = await this.clientService.getAll();
+    return clientsEntity.map((item) => new ClientResponseDto(item));
   }
 
   @ApiTags('Client')
@@ -55,8 +57,9 @@ export class ClientController {
   })
   @HttpCode(200)
   @Get('/:id')
-  public async getOne(@Query('id') id: number): Promise<any> {
-    return await this.clientService.getOne(id);
+  public async getOne(@Query('id') id: number): Promise<ClientResponseDto> {
+    const clientEntity = await this.clientService.getOne(id);
+    return new ClientResponseDto(clientEntity);
   }
 
   @ApiTags('Client')
@@ -68,8 +71,12 @@ export class ClientController {
   })
   @HttpCode(200)
   @Put('/:id')
-  public async update(@Body() client, @Query('id') id: number): Promise<any> {
-    return await this.clientService.update(client, id);
+  public async update(
+    @Body() client: CreateClientDto,
+    @Query('id') id: number,
+  ): Promise<ClientResponseDto> {
+    const clientEntity = await this.clientService.update(client, id);
+    return new ClientResponseDto(clientEntity);
   }
 
   @ApiTags('Client')
@@ -77,7 +84,7 @@ export class ClientController {
   @ApiResponse({ status: HttpStatus.OK, description: 'Успешно', type: Array })
   @HttpCode(200)
   @Delete('/:id')
-  public async delete(@Query('id') id: number): Promise<any> {
-    return await this.clientService.delete(id);
+  public async delete(@Query('id') id: number): Promise<void> {
+    await this.clientService.delete(id);
   }
 }

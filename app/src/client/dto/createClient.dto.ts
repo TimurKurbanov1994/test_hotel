@@ -2,6 +2,8 @@ import { IsBoolean, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateClientDto {
+  constructor(client) {}
+
   @ApiProperty({ description: 'Имя клиента', nullable: false })
   @MaxLength(50)
   @IsNotEmpty()

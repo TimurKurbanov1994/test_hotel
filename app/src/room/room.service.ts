@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoomEntity } from './entitites/room.entity';
 import { Between, In, Not, Repository } from 'typeorm';
@@ -11,7 +11,7 @@ export class RoomService {
     private readonly roomService: Repository<RoomEntity>,
   ) {}
 
-  public async create(dto: CreateRoomDto): Promise<any> {
+  public async create(dto: CreateRoomDto): Promise<RoomEntity> {
     const room: RoomEntity = {
       id: undefined,
       type: dto.type,
@@ -23,16 +23,20 @@ export class RoomService {
     return await this.roomService.save(roomEntity);
   }
 
-  public async getOne(id: number): Promise<any> {
-    return await this.roomService.findOne({
+  public async getOne(id: number): Promise<RoomEntity> {
+    const roomEntity = await this.roomService.findOne({
       where: { id },
     });
+    if (!roomEntity) {
+      throw new NotFoundException(`Номер в отеле с id = ${id} не существует!`);
+    }
+    return roomEntity;
   }
 
   public async getAvailableRooms(dto: {
     start_date: Date;
     end_date: Date;
-  }): Promise<any> {
+  }): Promise<RoomEntity[]> {
     const { start_date, end_date } = dto;
     const roomIds = await this.roomService.find({
       where: [
@@ -51,5 +55,9 @@ export class RoomService {
         id: Not(In(room_id)),
       },
     });
+  }
+
+  public async getAll(): Promise<RoomEntity[]> {
+    return await this.roomService.find();
   }
 }

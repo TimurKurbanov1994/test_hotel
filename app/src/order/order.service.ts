@@ -12,6 +12,8 @@ import { CreateOrderDto } from './dto/createOrder.dto';
 import { ClientService } from '../client/client.service';
 import { RoomService } from '../room/room.service';
 import { CreateCancelDto } from './dto/cancelOrder.dto';
+import { RoomEntity } from '../room/entitites/room.entity';
+import { inputDateDto } from './dto/inputDate.dto';
 
 @Injectable()
 export class OrderService {
@@ -22,7 +24,7 @@ export class OrderService {
     private readonly roomService: RoomService,
   ) {}
 
-  public async createBooking(dto: CreateOrderDto): Promise<any> {
+  public async createBooking(dto: CreateOrderDto): Promise<OrderEntity> {
     const clientDB = await this.clientService.getOne(dto.client_id);
     if (!clientDB) {
       throw new NotFoundException(
@@ -72,11 +74,13 @@ export class OrderService {
     return await this.ordersRepo.save(orderEntity);
   }
 
-  public async getAll(): Promise<any> {
-    return await this.ordersRepo.find({ relations: { client: true } });
+  public async getAll(): Promise<OrderEntity[]> {
+    return await this.ordersRepo.find({
+      relations: { client: true, room: true },
+    });
   }
 
-  public async getAvailableRooms(dto: CreateOrderDto): Promise<any> {
+  public async getAvailableRooms(dto: inputDateDto): Promise<RoomEntity[]> {
     const { start_date, end_date } = dto;
     return await this.roomService.getAvailableRooms({
       start_date,
@@ -84,20 +88,20 @@ export class OrderService {
     });
   }
 
-  public async getOne(id: number): Promise<any> {
-    return await this.ordersRepo.findOne({
+  public async getOne(id: number): Promise<OrderEntity> {
+    const orderEntity = await this.ordersRepo.findOne({
       where: { id },
       relations: { client: true, room: true },
     });
+    if (!orderEntity) {
+      throw new NotFoundException(`Бронь с id = ${id} не существует!`);
+    }
+    return orderEntity;
   }
 
-  public async cancelBooking(dto: CreateCancelDto): Promise<any> {
+  public async cancelBooking(dto: CreateCancelDto): Promise<OrderEntity> {
     const { order_id } = dto;
     await this.ordersRepo.update({ id: order_id }, { booked: false });
     return this.getOne(order_id);
-  }
-
-  public async delete(id): Promise<any> {
-    return await this.ordersRepo.delete({ id });
   }
 }

@@ -1,8 +1,11 @@
 import { IsBoolean, IsDate, IsNotEmpty, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { OrderEntity } from '../entities/order.entity';
 
 export class CreateOrderDto {
+  constructor(order: OrderEntity) {}
+
   @ApiProperty({ description: 'ID клиента', nullable: false })
   @IsNotEmpty()
   @IsNumber()

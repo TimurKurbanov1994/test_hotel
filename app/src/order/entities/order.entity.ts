@@ -19,7 +19,10 @@ export class OrderEntity {
   @Column({ nullable: false })
   vip: boolean;
 
-  @ManyToOne(() => ClientEntity, (client) => client.orders, { nullable: false })
+  @ManyToOne(() => ClientEntity, (client) => client.orders, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   client: ClientEntity;
 
   @ManyToOne(() => RoomEntity, (room) => room.orders, { nullable: false })

@@ -21,7 +21,9 @@ export class ClientEntity {
   @Column({ default: false })
   vip: boolean;
 
-  @OneToMany(() => OrderEntity, (order: OrderEntity) => order.client)
+  @OneToMany(() => OrderEntity, (order: OrderEntity) => order.client, {
+    cascade: true,
+  })
   @JoinColumn()
   orders: OrderEntity[];
 }

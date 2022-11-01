@@ -6,22 +6,27 @@ import { OrderModule } from './order/order.module';
 import { OrderEntity } from './order/entities/order.entity';
 import { RoomModule } from './room/room.module';
 import { RoomEntity } from './room/entitites/room.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     ClientModule,
     OrderModule,
+    RoomModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: process.env.DB_HOST,
       port: 5432,
-      username: 'user',
-      password: 'password',
-      database: 'hotel',
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DB,
       entities: [ClientEntity, OrderEntity, RoomEntity],
       synchronize: true,
     }),
-    RoomModule,
   ],
 })
 export class AppModule {}
