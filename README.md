@@ -16,7 +16,7 @@ docker-compose up -d --build db
 
 # 3. Загрузить тестовые данные в БД
 pg_restore --host "localhost" --port "5432" --username "user" 
---no-password --dbname "hotel" --verbose "test.sql"
+--no-password --dbname "hotel" --verbose "db/hotel.sql"
 
 # 4. Собрать и запустить API в контейнере
 docker-compose up -d --build api
