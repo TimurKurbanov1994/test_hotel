@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateOrderDto } from './createOrder.dto';
 import { ClientResponseDto } from '../../client/dto/clientResponse.dto';
@@ -34,4 +34,8 @@ export class ResponseOrderDto extends CreateOrderDto {
   @ApiProperty({ description: 'Карточка номера', nullable: false })
   @IsNotEmpty()
   room: ResponseRoomDto;
+
+  @ApiProperty({ description: 'VIP', default: false })
+  @IsBoolean()
+  vip: boolean;
 }

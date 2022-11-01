@@ -1,4 +1,4 @@
-import { IsBoolean, IsDate, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { OrderEntity } from '../entities/order.entity';
@@ -32,8 +32,4 @@ export class CreateOrderDto {
   @IsDate()
   @Type(() => Date)
   end_date: Date;
-
-  @ApiProperty({ description: 'VIP', default: false })
-  @IsBoolean()
-  vip: boolean;
 }
