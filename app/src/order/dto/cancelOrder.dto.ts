@@ -6,4 +6,9 @@ export class CreateCancelDto {
   @IsNotEmpty()
   @IsNumber()
   order_id: number;
+
+  @ApiProperty({ description: 'ID клиента', nullable: false })
+  @IsNotEmpty()
+  @IsNumber()
+  client_id: number;
 }

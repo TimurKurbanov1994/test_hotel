@@ -100,7 +100,16 @@ export class OrderService {
   }
 
   public async cancelBooking(dto: CreateCancelDto): Promise<OrderEntity> {
-    const { order_id } = dto;
+    const { order_id, client_id } = dto;
+    const order = await this.ordersRepo.find({
+      where: { id: order_id, client: { id: client_id } },
+    });
+    if (!order.length) {
+      throw new HttpException(
+        { message: `У данного пользователя нет доступа к брони ${order_id}` },
+        HttpStatus.FORBIDDEN,
+      );
+    }
     await this.ordersRepo.update({ id: order_id }, { booked: false });
     return this.getOne(order_id);
   }
